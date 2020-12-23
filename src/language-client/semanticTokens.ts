@@ -201,14 +201,18 @@ export class SemanticTokensFeature extends TextDocumentFeature<boolean | Semanti
       }
       : undefined
 
+    let disposable: Disposable
     const disposables: Disposable[] = []
     if (documentProvider !== undefined) {
       disposables.push(languages.registerDocumentSemanticTokensProvider(options.documentSelector!, documentProvider, options.legend))
+      disposable = languages.registerDocumentSemanticTokensProvider(options.documentSelector, documentProvider, options.legend)
     }
     if (rangeProvider !== undefined) {
       disposables.push(languages.registerDocumentRangeSemanticTokensProvider(options.documentSelector!, rangeProvider, options.legend))
     }
 
-    return [Disposable.create(() => disposables.forEach(item => item.dispose())), { range: rangeProvider, full: documentProvider, onDidChangeSemanticTokensEmitter: eventEmitter }]
+    // TODO
+    // return [Disposable.create(() => disposables.forEach(item => item.dispose())), { range: rangeProvider, full: documentProvider, onDidChangeSemanticTokensEmitter: eventEmitter }]
+    return [disposable, {range: rangeProvider, full: documentProvider, onDidChangeSemanticTokensEmitter: eventEmitter}]
   }
 }
